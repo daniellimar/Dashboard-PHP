@@ -6,6 +6,7 @@ use App\Filament\Resources\PermissionResource\Pages;
 use App\Filament\Resources\PermissionResource\RelationManagers;
 use App\Models\Permission;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -26,16 +27,22 @@ class PermissionResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload()
             ]);
+
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->label('Nome completo'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
+                    ->dateTime('d/m/Y H:i:s')
+                    ->label('Criado em'),
             ])
             ->filters([
                 //

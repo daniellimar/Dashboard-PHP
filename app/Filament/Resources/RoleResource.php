@@ -6,6 +6,7 @@ use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
 use App\Models\Role;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -26,6 +27,10 @@ class RoleResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('permissions')
+                    ->multiple()
+                    ->relationship('permissions', 'name')
+                    ->preload(),
             ]);
     }
 
@@ -33,9 +38,10 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->label('Nome completo'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
+                    ->dateTime('d/m/Y H:i:s')
+                    ->label('Criado em'),
             ])
             ->filters([
                 //
