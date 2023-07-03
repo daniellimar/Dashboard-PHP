@@ -26,11 +26,13 @@ class RoleResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Nome'),
                 Forms\Components\Select::make('permissions')
                     ->multiple()
                     ->relationship('permissions', 'name')
-                    ->preload(),
+                    ->preload()
+                    ->label('Permissão'),
             ]);
     }
 
@@ -38,7 +40,7 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Nome completo'),
+                Tables\Columns\TextColumn::make('name')->label('Nome'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d/m/Y H:i:s')
                     ->label('Criado em'),

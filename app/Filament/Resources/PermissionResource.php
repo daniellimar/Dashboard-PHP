@@ -26,11 +26,13 @@ class PermissionResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Nome'),
                 Select::make('roles')
                     ->multiple()
                     ->relationship('roles', 'name')
                     ->preload()
+                    ->label('Regra'),
             ]);
 
     }
@@ -39,7 +41,7 @@ class PermissionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Nome completo'),
+                Tables\Columns\TextColumn::make('name')->label('Nome'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d/m/Y H:i:s')
                     ->label('Criado em'),
