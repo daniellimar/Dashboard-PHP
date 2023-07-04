@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Hash;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+    protected static ?string $modelLabel = 'usuário';
+    protected static ?string $slug = 'usuarios';
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
@@ -32,6 +33,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password')
                     ->password()
@@ -42,7 +44,9 @@ class UserResource extends Resource
                     ->required(fn(string $context): bool => $context === 'create'),
                 Select::make('roles')
                     ->multiple()
-                    ->relationship('roles', 'name')
+                    ->relationship('roles', 'name', fn(Builder $query) =>
+                        auth()->user()->hasRole('Admin') ? null : $query->where('name', '!=', 'Admin')
+                    )
                     ->preload()
             ]);
     }
@@ -85,5 +89,15 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return auth()->user()->hasRole('Admin')
+            ? parent::getEloquentQuery()
+            : parent::getEloquentQuery()->whereHas(
+            'roles',
+            fn(Builder $query) => $query->where('name', '!=', 'Admin')
+        );
     }
 }
